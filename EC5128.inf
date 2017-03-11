@@ -1,0 +1,110 @@
+;; ec6816.inf
+;; Copyright (C) EChip 2011-2013, all rights are reserved
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$CHICAGO$"
+
+Class=Media
+ClassGUID={4d36e96c-e325-11ce-bfc1-08002be10318}
+Provider=%ProviderName%
+DriverVer=11/14/2013,0.0.0.0
+CatalogFile=EC5128.cat
+CatalogFile.NTx86=EC5128X86.cat
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+[SourceDisksNames]
+1 = "EChip device driver Disk",Disk1,,
+
+[SourceDisksFiles]
+EC5128.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-1"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+EChip_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+
+; PCI hardware IDs use the form
+;
+%Device0Desc%=EChip_DDI, PCI\VEN_1797&DEV_6810
+%Device1Desc%=EChip_DDI, PCI\VEN_1797&DEV_6811
+%Device2Desc%=EChip_DDI, PCI\VEN_1797&DEV_6812
+%Device3Desc%=EChip_DDI, PCI\VEN_1797&DEV_6813
+%Device4Desc%=EChip_DDI, PCI\VEN_1797&DEV_6814
+%Device5Desc%=EChip_DDI, PCI\VEN_1797&DEV_6815
+%Device6Desc%=EChip_DDI, PCI\VEN_1797&DEV_6816
+%Device7Desc%=EChip_DDI, PCI\VEN_1797&DEV_6817
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[EChip_DDI]
+CopyFiles=EChip_Files_Driver
+AddReg=EChip_9X_AddReg
+
+[EChip_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,EC5128.sys
+; --------- Windows NT -----------------
+
+[EChip_DDI.NT]
+CopyFiles=EChip_Files_Driver
+
+[EChip_DDI.NT.Services]
+Addservice = EChip, 0x00000002, EChip_AddService
+
+[EChip_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\EC5128.sys
+
+; --------- Files (common) -------------
+
+[EChip_Files_Driver]
+EC5128.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="EChip"
+MfgName="EChip Inc."
+Device0Desc="EChip Video Chn0 Driver"
+Device1Desc="EChip Video Chn1 Driver"
+Device2Desc="EChip Video Chn2 Driver"
+Device3Desc="EChip Video Chn3 Driver"
+Device4Desc="EChip Audio Chn0 Driver"
+Device5Desc="EChip Audio Chn1 Driver"
+Device6Desc="EChip Audio Chn2 Driver"
+Device7Desc="EChip Audio Chn3 Driver"
+DeviceClassName="EChip"
+SvcDesc="EChip Device"
